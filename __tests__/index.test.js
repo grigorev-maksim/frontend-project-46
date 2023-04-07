@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { test, expect } from 'jest';
+import { test, expect } from '@jest/globals';
 
 import parser from '../src/index.js';
 
