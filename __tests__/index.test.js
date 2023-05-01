@@ -10,18 +10,34 @@ const __dirname = path.dirname(__filename);
 
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 
-test('file json', () => {
+test('file json1', () => {
   const filename1 = getFixturePath('file1.json');
   const filename2 = getFixturePath('file2.json');
-  const resultname = getFixturePath('file_result.txt');
+  const resultname = getFixturePath('file_result1.txt');
   const result = readFileSync(resultname, 'utf8');
   expect(parser(filename1, filename2)).toBe(result);
 });
 
-test('file yml', () => {
+test('file yml1', () => {
   const filename1 = getFixturePath('file1.yml');
   const filename2 = getFixturePath('file2.yml');
-  const resultname = getFixturePath('file_result.txt');
+  const resultname = getFixturePath('file_result1.txt');
+  const result = readFileSync(resultname, 'utf8');
+  expect(parser(filename1, filename2)).toBe(result);
+});
+
+test('file json2', () => {
+  const filename1 = getFixturePath('file3.json');
+  const filename2 = getFixturePath('file4.json');
+  const resultname = getFixturePath('file_result2.txt');
+  const result = readFileSync(resultname, 'utf8');
+  expect(parser(filename1, filename2)).toBe(result);
+});
+
+test('file yml2', () => {
+  const filename1 = getFixturePath('file3.yml');
+  const filename2 = getFixturePath('file4.yml');
+  const resultname = getFixturePath('file_result2.txt');
   const result = readFileSync(resultname, 'utf8');
   expect(parser(filename1, filename2)).toBe(result);
 });

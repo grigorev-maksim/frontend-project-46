@@ -1,34 +1,22 @@
 import _ from 'lodash';
 
-const genDiff = (obj1, obj2) => {
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-  const keys = _.union(keys1, keys2);
-  const sortedKeys = _.sortBy(keys)
-    .reduce((acc, key) => {
-      if (!Object.hasOwn(obj1, key)) {
-        // acc[`+ ${key}`] = obj2[key];
-        acc.push(`  + ${key}: ${obj2[key]}`);
-        return acc;
-      }
-      if (!Object.hasOwn(obj2, key)) {
-        // acc[`- ${key}`] = obj1[key];
-        acc.push(`  - ${key}: ${obj1[key]}`);
-        return acc;
-      }
-      if (obj1[key] !== obj2[key]) {
-        acc.push(`  - ${key}: ${obj1[key]}`);
-        acc.push(`  + ${key}: ${obj2[key]}`);
-        return acc;
-      }
-      if (obj1[key] === obj2[key]) {
-        acc.push(`    ${key}: ${obj1[key]}`);
-        return acc;
-      }
-      return acc;
-    }, []);
-  const str = sortedKeys.join('\n');
-  return `{\n${str}\n}`;
-};
+const getKeys = (f1, f2) => _.sortBy(_.uniq(_.union(_.keys(f1), _.keys(f2))));
 
-export default genDiff;
+const diff = (f1, f2) => {
+  const keys = getKeys(f1, f2);
+  return keys.map((key) => {
+    if (_.has(f1, key) && !_.has(f2, key)) {
+      return { key, value: f1[key], status: 'deleted' };
+    }
+    if (_.has(f2, key) && !_.has(f1, key)) {
+      return { key, value: f2[key], status: 'added' };
+    }
+    if (_.isObject(f1[key]) && _.isObject(f2[key])) {
+      return { key, children: diff(f1[key], f2[key]), status: 'nested' };
+    }
+    return f1[key] === f2[key] ? { key, value: f1[key], status: 'unchanged' } : {
+      key, value: f1[key], value2: f2[key], status: 'changed',
+    };
+  });
+};
+export default diff;
