@@ -11,6 +11,6 @@ export default (data1, data2, format) => {
     case 'json':
       return json(data1, data2);
     default:
-      throw new Error();
+      return stylish(data1, data2);
   }
 };
