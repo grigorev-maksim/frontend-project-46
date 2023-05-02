@@ -57,3 +57,19 @@ test('plain yml3', () => {
   const result = readFileSync(resultname, 'utf8');
   expect(parser(filename1, filename2, 'plain')).toBe(result);
 });
+
+test('json json4', () => {
+  const filename1 = getFixturePath('file3.json');
+  const filename2 = getFixturePath('file4.json');
+  const resultname = getFixturePath('file_result4.txt');
+  const result = readFileSync(resultname, 'utf8');
+  expect(parser(filename1, filename2, 'json')).toBe(result);
+});
+
+test('json yml4', () => {
+  const filename1 = getFixturePath('file3.yml');
+  const filename2 = getFixturePath('file4.yml');
+  const resultname = getFixturePath('file_result4.txt');
+  const result = readFileSync(resultname, 'utf8');
+  expect(parser(filename1, filename2, 'json')).toBe(result);
+});

@@ -17,8 +17,8 @@ const convert = (file) => {
   return result.replaceAll(',', '').trim();
 };
 
-export default (f1, f2) => {
-  const innerTree = diff(f1, f2);
+export default (file1, file2) => {
+  const innerTree = diff(file1, file2);
   const iter = (tree) => tree.map((node) => {
     switch (node.status) {
       case 'deleted':

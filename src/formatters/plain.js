@@ -10,8 +10,8 @@ const checkType = (data) => {
   return data;
 };
 
-export default (f1, f2) => {
-  const innerTree = diff(f1, f2);
+export default (file1, file2) => {
+  const innerTree = diff(file1, file2);
   const iter = (tree, path) => {
     const filtered = tree.filter((node) => node.status !== 'unchanged');
     return filtered.map((node) => {
