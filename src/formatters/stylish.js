@@ -17,7 +17,7 @@ const convert = (file) => {
   return result.replaceAll(',', '').trim();
 };
 
-const renderTree = (f1, f2) => {
+export default (f1, f2) => {
   const innerTree = diff(f1, f2);
   const iter = (tree) => tree.map((node) => {
     switch (node.status) {
@@ -37,5 +37,3 @@ const renderTree = (f1, f2) => {
   }).join('\n');
   return `{\n${iter(innerTree)}\n}`;
 };
-
-export default renderTree;

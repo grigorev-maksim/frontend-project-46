@@ -1,13 +1,8 @@
-import renderTree from './formatters/stylish.js';
 import parse from './parsers.js';
+import gendiff from './formatters/index.js';
 
-export default (file1, file2, format) => {
+export default (file1, file2, formatName) => {
   const data1 = parse(file1);
   const data2 = parse(file2);
-  switch (format) {
-    case 'stylish':
-      return renderTree(data1, data2);
-    default:
-      return renderTree(data1, data2);
-  }
+  return gendiff(data1, data2, formatName);
 };
