@@ -1,30 +1,27 @@
-import diff from '../genDiff.js';
-
-const checkType = (data) => {
+const stringify = (data) => {
   if (typeof data === 'string') {
     return `'${data}'`;
   }
   if (typeof data === 'object' && data !== null) {
     return '[complex value]';
   }
-  return data;
+  return `${data}`;
 };
 
-export default (file1, file2) => {
-  const innerTree = diff(file1, file2);
+export default (innerTree) => {
   const iter = (tree, path) => {
     const filtered = tree.filter((node) => node.status !== 'unchanged');
     return filtered.map((node) => {
-      const fullPath = (path === '') ? `${node.key}` : `${path}.${node.key}`;
+      const fullPath = (path === '') ? [node.key] : [path, node.key];
       switch (node.status) {
         case 'deleted':
-          return `Property '${fullPath}' was removed`;
+          return `Property '${fullPath.join('.')}' was removed`;
         case 'added':
-          return `Property '${fullPath}' was added with value: ${checkType(node.value)}`;
+          return `Property '${fullPath.join('.')}' was added with value: ${stringify(node.value)}`;
         case 'changed':
-          return `Property '${fullPath}' was updated. From ${checkType(node.value)} to ${checkType(node.value2)}`;
+          return `Property '${fullPath.join('.')}' was updated. From ${stringify(node.value)} to ${stringify(node.value2)}`;
         case 'nested':
-          return iter(node.children, fullPath);
+          return iter(node.children, fullPath.join('.'));
         default:
           throw new Error();
       }

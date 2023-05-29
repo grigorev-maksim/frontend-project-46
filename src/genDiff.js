@@ -11,10 +11,10 @@ const diff = (f1, f2) => {
     if (_.has(f2, key) && !_.has(f1, key)) {
       return { key, value: f2[key], status: 'added' };
     }
-    if (_.isObject(f1[key]) && _.isObject(f2[key])) {
+    if (_.isPlainObject(f1[key]) && _.isPlainObject(f2[key])) {
       return { key, children: diff(f1[key], f2[key]), status: 'nested' };
     }
-    return f1[key] === f2[key] ? { key, value: f1[key], status: 'unchanged' } : {
+    return _.isEqual(f1[key], f2[key]) ? { key, value: f1[key], status: 'unchanged' } : {
       key, value: f1[key], value2: f2[key], status: 'changed',
     };
   });

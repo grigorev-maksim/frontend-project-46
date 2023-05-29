@@ -2,15 +2,15 @@ import stylish from './stylish.js';
 import plain from './plain.js';
 import json from './json.js';
 
-export default (data1, data2, format) => {
+export default (tree, format = 'stylish') => {
   switch (format) {
     case 'stylish':
-      return stylish(data1, data2);
+      return stylish(tree);
     case 'plain':
-      return plain(data1, data2);
+      return plain(tree);
     case 'json':
-      return json(data1, data2);
+      return json(tree);
     default:
-      return stylish(data1, data2);
+      throw new Error();
   }
 };

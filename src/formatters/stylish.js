@@ -1,5 +1,3 @@
-import diff from '../genDiff.js';
-
 const makeIndent = (f) => {
   const file = f.split('\n');
   return file.map((str) => {
@@ -17,8 +15,7 @@ const convert = (file) => {
   return result.replaceAll(',', '').trim();
 };
 
-export default (file1, file2) => {
-  const innerTree = diff(file1, file2);
+export default (innerTree) => {
   const iter = (tree) => tree.map((node) => {
     switch (node.status) {
       case 'deleted':

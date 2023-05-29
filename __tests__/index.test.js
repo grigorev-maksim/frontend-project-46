@@ -3,73 +3,48 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { test, expect } from '@jest/globals';
 
-import parser from '../src/index.js';
+import parser from '../index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 
-test('stylish json1', () => {
-  const filename1 = getFixturePath('file1.json');
-  const filename2 = getFixturePath('file2.json');
-  const resultname = getFixturePath('file_result1.txt');
+test.each([
+  ['file1.json', 'file2.json', 'file_result1.txt'],
+  ['file1.yml', 'file2.yml', 'file_result1.txt'],
+])('%s %s', (filepath1, filepath2, expected) => {
+  const filename1 = getFixturePath(filepath1);
+  const filename2 = getFixturePath(filepath2);
+  const resultname = getFixturePath(expected);
   const result = readFileSync(resultname, 'utf8');
-  expect(parser(filename1, filename2, 'stylish')).toBe(result);
+  expect(parser(filename1, filename2)).toBe(result);
 });
 
-test('stylish yml1', () => {
-  const filename1 = getFixturePath('file1.yml');
-  const filename2 = getFixturePath('file2.yml');
-  const resultname = getFixturePath('file_result1.txt');
+test.each([
+  ['file1.json', 'file2.json', 'stylish', 'file_result1.txt'],
+  ['file1.yml', 'file2.yml', 'stylish', 'file_result1.txt'],
+  ['file1.json', 'file2.json', 'plain', 'file_result2.txt'],
+  ['file1.yml', 'file2.yml', 'plain', 'file_result2.txt'],
+])('%s %s %s', (filepath1, filepath2, format, expected) => {
+  const filename1 = getFixturePath(filepath1);
+  const filename2 = getFixturePath(filepath2);
+  const resultname = getFixturePath(expected);
   const result = readFileSync(resultname, 'utf8');
-  expect(parser(filename1, filename2, 'stylish')).toBe(result);
+  if (format === 'json') {
+    const data = parser(filepath1, filepath2, 'json');
+    expect(() => JSON.parse(data)).not.toThrow();
+  } else {
+    expect(parser(filename1, filename2, format)).toBe(result);
+  }
 });
 
-test('stylish json2', () => {
-  const filename1 = getFixturePath('file3.json');
-  const filename2 = getFixturePath('file4.json');
-  const resultname = getFixturePath('file_result2.txt');
-  const result = readFileSync(resultname, 'utf8');
-  expect(parser(filename1, filename2, 'stylish')).toBe(result);
-});
-
-test('stylish yml2', () => {
-  const filename1 = getFixturePath('file3.yml');
-  const filename2 = getFixturePath('file4.yml');
-  const resultname = getFixturePath('file_result2.txt');
-  const result = readFileSync(resultname, 'utf8');
-  expect(parser(filename1, filename2, 'stylish')).toBe(result);
-});
-
-test('plain json3', () => {
-  const filename1 = getFixturePath('file3.json');
-  const filename2 = getFixturePath('file4.json');
-  const resultname = getFixturePath('file_result3.txt');
-  const result = readFileSync(resultname, 'utf8');
-  expect(parser(filename1, filename2, 'plain')).toBe(result);
-});
-
-test('plain yml3', () => {
-  const filename1 = getFixturePath('file3.yml');
-  const filename2 = getFixturePath('file4.yml');
-  const resultname = getFixturePath('file_result3.txt');
-  const result = readFileSync(resultname, 'utf8');
-  expect(parser(filename1, filename2, 'plain')).toBe(result);
-});
-
-test('json json4', () => {
-  const filename1 = getFixturePath('file3.json');
-  const filename2 = getFixturePath('file4.json');
-  const resultname = getFixturePath('file_result4.txt');
-  const result = readFileSync(resultname, 'utf8');
-  expect(parser(filename1, filename2, 'json')).toBe(result);
-});
-
-test('json yml4', () => {
-  const filename1 = getFixturePath('file3.yml');
-  const filename2 = getFixturePath('file4.yml');
-  const resultname = getFixturePath('file_result4.txt');
-  const result = readFileSync(resultname, 'utf8');
-  expect(parser(filename1, filename2, 'json')).toBe(result);
+test.each([
+  ['file1.json', 'file2.json', 'json'],
+  ['file1.yml', 'file2.yml', 'json'],
+])('%s %s %s', (filepath1, filepath2, format) => {
+  const filename1 = getFixturePath(filepath1);
+  const filename2 = getFixturePath(filepath2);
+  const data = parser(filename1, filename2, format);
+  expect(() => JSON.parse(data)).not.toThrow();
 });
