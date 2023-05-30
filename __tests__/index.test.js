@@ -31,12 +31,7 @@ test.each([
   const filename2 = getFixturePath(filepath2);
   const resultname = getFixturePath(expected);
   const result = readFileSync(resultname, 'utf8');
-  if (format === 'json') {
-    const data = parser(filepath1, filepath2, 'json');
-    expect(() => JSON.parse(data)).not.toThrow();
-  } else {
-    expect(parser(filename1, filename2, format)).toBe(result);
-  }
+  expect(parser(filename1, filename2, format)).toBe(result);
 });
 
 test.each([
