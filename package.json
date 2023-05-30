@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Generator of difference is the CLI programm that generate difference between two files. Supporting formats: JSON, YML, YAML.",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "jest"
   },
