@@ -16,9 +16,10 @@ const diff = (f1, f2) => {
     }
     if (_.isEqual(f1[key], f2[key])) {
       return { key, value: f1[key], type: 'unchanged' };
-    } else {
-      return {key, value: f1[key], value2: f2[key], type: 'changed'};
     }
+    return {
+      key, value: f1[key], value2: f2[key], type: 'changed',
+    };
   });
 };
 export default diff;

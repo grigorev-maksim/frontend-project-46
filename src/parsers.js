@@ -1,5 +1,4 @@
 import yaml from 'js-yaml';
-import _ from 'lodash';
 
 const parse = (data, format) => {
   switch (format) {

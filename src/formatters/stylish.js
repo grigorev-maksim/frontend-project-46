@@ -10,20 +10,20 @@ const makeIndent = (f) => {
 
 function stringify(value, replacer = ' ', spacesCount = 1) {
   const indentforkey = replacer.repeat(spacesCount);
-  const stringifyJSON = (value, indent) => {
-    if (typeof value === 'string') {
-      return value;
+  const stringifyJSON = (currentValue, indent) => {
+    if (typeof currentValue === 'string') {
+      return currentValue;
     }
-    if (typeof value === 'object' && value !== null) {
-      const lines = Object.entries(value).map(([key, val]) => {
+    if (typeof currentValue === 'object' && currentValue !== null) {
+      const lines = Object.entries(currentValue).map(([key, val]) => {
         const keyString = typeof key === 'string' ? key : String(key);
         const valueString = stringifyJSON(val, indent + indentforkey);
         return `${indent}${keyString}: ${valueString}`;
       });
       return ['{', ...lines, `${indent.slice(0, -indentforkey.length)}}`].join('\n');
     }
-    return String(value);
-  }
+    return String(currentValue);
+  };
   return stringifyJSON(value, indentforkey);
 }
 

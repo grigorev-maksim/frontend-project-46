@@ -11,6 +11,6 @@ export default (tree, format = 'stylish') => {
     case 'json':
       return json(tree);
     default:
-      throw new Error(`Invalid format ${format}! Try supported format.`)
+      throw new Error(`Invalid format ${format}! Try supported format.`);
   }
 };

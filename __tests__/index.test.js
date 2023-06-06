@@ -25,4 +25,4 @@ test.each([
   expect(genDiff(filename1, filename2, 'stylish')).toBe(result1);
   expect(genDiff(filename1, filename2, 'plain')).toBe(result2);
   expect(() => JSON.parse(genDiff(filename1, filename2, 'json'))).not.toThrow();
-})
+});
