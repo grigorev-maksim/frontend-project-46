@@ -8,16 +8,34 @@ const makeIndent = (f) => {
   }).join('\n');
 };
 
+function stringify(value, replacer = ' ', spacesCount = 1) {
+  const indentforkey = replacer.repeat(spacesCount);
+  const stringifyJSON = (value, indent) => {
+    if (typeof value === 'string') {
+      return value;
+    }
+    if (typeof value === 'object' && value !== null) {
+      const lines = Object.entries(value).map(([key, val]) => {
+        const keyString = typeof key === 'string' ? key : String(key);
+        const valueString = stringifyJSON(val, indent + indentforkey);
+        return `${indent}${keyString}: ${valueString}`;
+      });
+      return ['{', ...lines, `${indent.slice(0, -indentforkey.length)}}`].join('\n');
+    }
+    return String(value);
+  }
+  return stringifyJSON(value, indentforkey);
+}
+
 const convert = (file) => {
-  const newFile = JSON.stringify(file, null, 4);
-  const unquoted = newFile.replaceAll('"', '');
-  const result = makeIndent(unquoted);
+  const newFile = stringify(file, ' ', 4);
+  const result = makeIndent(newFile);
   return result.replaceAll(',', '').trim();
 };
 
 export default (innerTree) => {
   const iter = (tree) => tree.map((node) => {
-    switch (node.status) {
+    switch (node.type) {
       case 'deleted':
         return `  - ${node.key}: ${convert(node.value)}`;
       case 'added':
@@ -29,7 +47,7 @@ export default (innerTree) => {
       case 'nested':
         return `    ${node.key}: {\n    ${makeIndent(iter(node.children))}\n    }`;
       default:
-        throw new Error();
+        throw new Error(`Unknown type '${node.type}'`);
     }
   }).join('\n');
   return `{\n${iter(innerTree)}\n}`;
