@@ -9,7 +9,7 @@ const parse = (data, format) => {
     case 'json':
       return JSON.parse(data);
     default:
-      throw new Error(`Invalid extension: '${format}'! Try supported formats.`);
+      throw new Error(`Invalid format: '${format}'! Try supported formats.`);
   }
 };
 

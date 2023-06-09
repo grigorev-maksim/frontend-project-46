@@ -5,10 +5,10 @@ const getKeys = (f1, f2) => _.sortBy(_.uniq(_.union(_.keys(f1), _.keys(f2))));
 const diff = (f1, f2) => {
   const keys = getKeys(f1, f2);
   return keys.map((key) => {
-    if (_.has(f1, key) && !_.has(f2, key)) {
+    if (!_.has(f2, key)) {
       return { key, value: f1[key], type: 'deleted' };
     }
-    if (_.has(f2, key) && !_.has(f1, key)) {
+    if (!_.has(f1, key)) {
       return { key, value: f2[key], type: 'added' };
     }
     if (_.isPlainObject(f1[key]) && _.isPlainObject(f2[key])) {

@@ -1,54 +1,34 @@
-const makeIndent = (f) => {
-  const file = f.split('\n');
-  return file.map((str) => {
-    if (str !== file[0]) {
-      return `    ${str}`;
-    }
-    return str;
-  }).join('\n');
-};
+import _ from 'lodash';
 
-function stringify(value, replacer = ' ', spacesCount = 1) {
-  const indentforkey = replacer.repeat(spacesCount);
-  const stringifyJSON = (currentValue, indent) => {
-    if (typeof currentValue === 'string') {
-      return currentValue;
-    }
-    if (typeof currentValue === 'object' && currentValue !== null) {
-      const lines = Object.entries(currentValue).map(([key, val]) => {
-        const keyString = typeof key === 'string' ? key : String(key);
-        const valueString = stringifyJSON(val, indent + indentforkey);
-        return `${indent}${keyString}: ${valueString}`;
-      });
-      return ['{', ...lines, `${indent.slice(0, -indentforkey.length)}}`].join('\n');
-    }
-    return String(currentValue);
+const genIndent = (depth, replacer = ' ', spacesCount = 4) => replacer.repeat((depth * spacesCount) - 2);
+
+const stringify = (nodeValue, depth = 1) => {
+  if (!(_.isObject(nodeValue))) {
+    return `${nodeValue}`;
+  }
+  const result = Object.entries(nodeValue).map(([key, value]) => `${genIndent(depth + 1)}  ${key}: ${stringify(value, depth + 1)}`);
+  return `{\n${result.join('\n')}\n  ${genIndent(depth)}}`;
+};
+const stylish = (tree) => {
+  const iter = (node, depth = 1) => {
+    const result = node.map((item) => {
+      switch (item.type) {
+        case 'nested':
+          return `${genIndent(depth)}  ${item.key}: {\n${iter(item.children, depth + 1)}\n${genIndent(depth)}  }`;
+        case 'added':
+          return `${genIndent(depth)}+ ${item.key}: ${stringify(item.value, depth)}`;
+        case 'deleted':
+          return `${genIndent(depth)}- ${item.key}: ${stringify(item.value, depth)}`;
+        case 'unchanged':
+          return `${genIndent(depth)}  ${item.key}: ${stringify(item.value, depth)}`;
+        case 'changed':
+          return `${genIndent(depth)}- ${item.key}: ${stringify(item.value, depth)}\n${genIndent(depth)}+ ${item.key}: ${stringify(item.value2, depth)}`;
+        default:
+          throw new Error(`Unknown type '${item.type}'`);
+      }
+    });
+    return result.join('\n');
   };
-  return stringifyJSON(value, indentforkey);
-}
-
-const convert = (file) => {
-  const newFile = stringify(file, ' ', 4);
-  const result = makeIndent(newFile);
-  return result.replaceAll(',', '').trim();
+  return `{\n${iter(tree)}\n}`;
 };
-
-export default (innerTree) => {
-  const iter = (tree) => tree.map((node) => {
-    switch (node.type) {
-      case 'deleted':
-        return `  - ${node.key}: ${convert(node.value)}`;
-      case 'added':
-        return `  + ${node.key}: ${convert(node.value)}`;
-      case 'unchanged':
-        return `    ${node.key}: ${convert(node.value)}`;
-      case 'changed':
-        return `  - ${node.key}: ${convert(node.value)}\n  + ${node.key}: ${convert(node.value2)}`;
-      case 'nested':
-        return `    ${node.key}: {\n    ${makeIndent(iter(node.children))}\n    }`;
-      default:
-        throw new Error(`Unknown type '${node.type}'`);
-    }
-  }).join('\n');
-  return `{\n${iter(innerTree)}\n}`;
-};
+export default stylish;

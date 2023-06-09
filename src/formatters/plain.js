@@ -12,7 +12,7 @@ export default (innerTree) => {
   const iter = (tree, path) => {
     const filtered = tree.filter((node) => node.type !== 'unchanged');
     return filtered.map((node) => {
-      const fullPath = (path.length === 0) ? [node.key] : [path.join('.'), node.key];
+      const fullPath = [...path, node.key];
       switch (node.type) {
         case 'deleted':
           return `Property '${fullPath.join('.')}' was removed`;
